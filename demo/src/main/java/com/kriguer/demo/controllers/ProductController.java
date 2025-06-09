@@ -21,7 +21,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity getAllProducts(){
-        var allProducts = productRepository.findAll();
+        var allProducts = productRepository.findAllByActiveTrue();
         return ResponseEntity.ok(allProducts);
         //return ResponseEntity.ok("Aplicação esta rodando !! ");
     }
@@ -30,7 +30,6 @@ public class ProductController {
         //System.out.println(data);
         Product newProduct = new Product(data);
         productRepository.save(newProduct);
-
         return ResponseEntity.ok().build();
     }
     @PutMapping
@@ -42,6 +41,18 @@ public class ProductController {
             existingProduct.setName(data.name());
             existingProduct.setPrice_in_cents(data.price_in_cents());
             return ResponseEntity.ok(existingProduct);
+        } else{
+            throw new EntityNotFoundException("Product not found");
+        }
+    }
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity deleteProduct(@PathVariable String id){
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if(optionalProduct.isPresent()){
+           Product product = optionalProduct.get();
+           product.setActive(false); // Assuming you have an 'active' field to mark as deleted
+            return ResponseEntity.noContent().build();
         } else{
             throw new EntityNotFoundException("Product not found");
         }
