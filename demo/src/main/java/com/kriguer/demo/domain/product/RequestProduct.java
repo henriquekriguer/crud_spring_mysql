@@ -1,6 +1,14 @@
 package com.kriguer.demo.domain.product;
 
-public record RequestProduct(String name, Integer price_in_cents) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record RequestProduct(
+        String id,
+        @NotBlank
+        String name,
+        @NotNull
+        Integer price_in_cents) {
     // essa classe é um DTO (Data Transfer Object) que serve para receber os dados do cliente
     // e converter para o objeto Product, que será salvo no banco de dados.
     // Ela é usada para evitar que o cliente envie dados desnecessários ou inválidos.
